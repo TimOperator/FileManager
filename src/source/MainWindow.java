@@ -12,8 +12,8 @@ public class MainWindow {
     private JTextField renameTextField;
     private JPanel mainPanel;
     private JButton openButton;
-    private JList fileList;
-    private JList newFileList;
+    private JList<String> fileList;
+    private JList<String> newFileList;
     private JTextField origTextField;
     private JFileChooser fileChooser;
     private DefaultListModel<String> model;
@@ -27,15 +27,11 @@ public class MainWindow {
         model2 = new DefaultListModel<>();
         newFileList.setModel(model2);
 
-        // Fill gui
-        loadFiles(new File("C:"));
-        updateRenaming();
-
         applyButton.addActionListener(actionEvent -> {
             Map<String, String> renames = updateRenaming();
-            String fileString = "";
+            StringBuilder fileString = new StringBuilder();
             for (Map.Entry<String, String> entry : renames.entrySet()) {
-                fileString += entry.getKey() + " \u2192 " + entry.getValue() + "\r\n";
+                fileString.append(entry.getKey()).append(" \u2192 ").append(entry.getValue()).append("\r\n");
             }
             int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to rename these files and directories?\r\n" + fileString);
             String path = pathTextField.getText();
@@ -44,8 +40,12 @@ public class MainWindow {
                     String src = path + "\\" + entry.getKey();
                     String dst = path + "\\" + entry.getValue();
                     File file = new File(src);
-                    file.renameTo(new File(dst));
-                    System.out.println("Renamed " + src + " to " + dst);
+                    boolean success = file.renameTo(new File(dst));
+                    if (success) {
+                        System.out.println("Renamed " + src + " to " + dst);
+                    } else {
+                        System.out.println("Unable to rename " + src + " to " + dst);
+                    }
                 }
 
                 //reload content
@@ -91,8 +91,8 @@ public class MainWindow {
 
         model.clear();
 
-        List directories = new ArrayList();
-        List files = new ArrayList();
+        List<String> directories = new ArrayList<>();
+        List<String> files = new ArrayList<>();
 
         for (final File file : Objects.requireNonNull(folder.listFiles())) {
             if (file.isDirectory()) {
@@ -142,6 +142,7 @@ public class MainWindow {
         frame.setContentPane(new MainWindow().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setSize(500, 600);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
