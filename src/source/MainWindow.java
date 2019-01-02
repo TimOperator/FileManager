@@ -2,10 +2,9 @@ package source;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.*;
+import java.util.ResourceBundle;
 
 public class MainWindow {
     private JTextField pathTextField;
@@ -21,6 +20,7 @@ public class MainWindow {
     private JFileChooser fileChooser;
     private DefaultListModel<String> model;
     private DefaultListModel<String> model2;
+    private static ResourceBundle strings;
 
     private MainWindow() {
         fileChooser = new JFileChooser();
@@ -153,7 +153,17 @@ public class MainWindow {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("FileManager 1.0");
+        //Load Strings
+        String language = "";
+        try {
+            language = System.getProperty("user.language");
+            String filename = "resources/strings_" + language;
+            strings = ResourceBundle.getBundle(filename);
+        } catch (MissingResourceException ex) {
+            System.out.println("Could not load language " + language + ": " + ex.toString());
+            strings = ResourceBundle.getBundle("resources/strings_en");
+        }
+        JFrame frame = new JFrame(strings.getString("program_title"));
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
