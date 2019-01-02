@@ -1,8 +1,9 @@
 package source;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.*;
 
@@ -15,6 +16,8 @@ public class MainWindow {
     private JList<String> fileList;
     private JList<String> newFileList;
     private JTextField origTextField;
+    private JScrollPane oldScrollPane;
+    private JScrollPane newScrollPane;
     private JFileChooser fileChooser;
     private DefaultListModel<String> model;
     private DefaultListModel<String> model2;
@@ -78,6 +81,18 @@ public class MainWindow {
             public void keyReleased(KeyEvent keyEvent) {
                 super.keyReleased(keyEvent);
                 updateRenaming();
+            }
+        });
+        oldScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+                newScrollPane.getVerticalScrollBar().setValue(oldScrollPane.getVerticalScrollBar().getValue());
+            }
+        });
+        newScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+                oldScrollPane.getVerticalScrollBar().setValue(newScrollPane.getVerticalScrollBar().getValue());
             }
         });
     }
