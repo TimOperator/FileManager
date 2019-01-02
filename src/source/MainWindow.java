@@ -139,6 +139,11 @@ public class MainWindow {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("FileManager 1.0");
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            //Doesn't matter
+        }
         frame.setContentPane(new MainWindow().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
