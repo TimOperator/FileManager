@@ -39,7 +39,7 @@ public class MainWindow {
             for (Map.Entry<String, String> entry : renames.entrySet()) {
                 fileString.append(entry.getKey()).append(" \u2192 ").append(entry.getValue()).append("\r\n");
             }
-            int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to rename these files and directories?\r\n" + fileString);
+            int res = JOptionPane.showConfirmDialog(null, strings.containsKey("confirm_dialog")+ "\r\n" + fileString);
             String path = pathTextField.getText();
             if (res == JOptionPane.OK_OPTION) {
                 for (Map.Entry<String, String> entry : renames.entrySet()) {
@@ -86,18 +86,8 @@ public class MainWindow {
                 updateRenaming();
             }
         });
-        oldScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
-                newScrollPane.getVerticalScrollBar().setValue(oldScrollPane.getVerticalScrollBar().getValue());
-            }
-        });
-        newScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
-                oldScrollPane.getVerticalScrollBar().setValue(newScrollPane.getVerticalScrollBar().getValue());
-            }
-        });
+        oldScrollPane.getVerticalScrollBar().addAdjustmentListener(adjustmentEvent -> newScrollPane.getVerticalScrollBar().setValue(oldScrollPane.getVerticalScrollBar().getValue()));
+        newScrollPane.getVerticalScrollBar().addAdjustmentListener(adjustmentEvent -> oldScrollPane.getVerticalScrollBar().setValue(newScrollPane.getVerticalScrollBar().getValue()));
     }
 
     /**
