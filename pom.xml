@@ -22,7 +22,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
-                        <manifestFile>src/main/resources/META-INF/MANIFEST.mf</manifestFile>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.mf</manifestFile>
                     </archive>
                 </configuration>
             </plugin>
