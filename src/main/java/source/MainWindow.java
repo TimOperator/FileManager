@@ -34,7 +34,19 @@ public class MainWindow {
         newFileList.setModel(model2);
 
         applyButton.addActionListener(actionEvent -> {
+            if (pathTextField.getText().length() <= 0) {
+                JOptionPane.showMessageDialog(null, strings.getString("no_directory_dialog"));
+                return;
+            }
+            if (model.size() <= 0) {
+                JOptionPane.showMessageDialog(null, strings.getString("empty_list_dialog"));
+                return;
+            }
             Map<String, String> renames = updateRenaming();
+            if (renames.size() <= 0) {
+                JOptionPane.showMessageDialog(null, strings.getString("no_files_dialog"));
+                return;
+            }
             StringBuilder fileString = new StringBuilder();
             for (Map.Entry<String, String> entry : renames.entrySet()) {
                 fileString.append(entry.getKey()).append(" \u2192 ").append(entry.getValue()).append("\r\n");
@@ -138,7 +150,9 @@ public class MainWindow {
                 name = tmp;
             } else if (str.length() == 0) {
                 String tmp = replacement + name;
-                renames.put(name, tmp);
+                if (replacement.length() > 0) {
+                    renames.put(name, tmp);
+                }
                 name = tmp;
             }
             model2.addElement(name);
