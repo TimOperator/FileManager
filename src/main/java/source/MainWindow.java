@@ -54,6 +54,7 @@ public class MainWindow {
             int res = JOptionPane.showConfirmDialog(null, strings.containsKey("confirm_dialog")+ "\r\n" + fileString);
             String path = pathTextField.getText();
             if (res == JOptionPane.OK_OPTION) {
+                List<String> errorList = new ArrayList<>();
                 for (Map.Entry<String, String> entry : renames.entrySet()) {
                     String src = path + "\\" + entry.getKey();
                     String dst = path + "\\" + entry.getValue();
@@ -63,7 +64,11 @@ public class MainWindow {
                         System.out.println("Renamed " + src + " to " + dst);
                     } else {
                         System.out.println("Unable to rename " + src + " to " + dst);
+                        errorList.add(src + " \u2192 " + dst);
                     }
+                }
+                if (!errorList.isEmpty()) {
+                    JOptionPane.showConfirmDialog(null, strings.containsKey("rename_error_dialog") + ":\r\n" + errorList.toString());
                 }
 
                 //reload content
