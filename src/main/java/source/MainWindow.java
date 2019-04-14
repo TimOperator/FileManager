@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class MainWindow {
     private static ResourceBundle strings;
@@ -113,11 +114,11 @@ public class MainWindow {
             if (pathTextField.getText().trim().length() > 0) {
                 String path;
                 path = pathTextField.getText().trim();
-                Map<String, Long> map = getDirectorySizes(path);
+                List<Directory> dirList = getDirectorySizes(path);
                 StringBuilder tmp = new StringBuilder();
-                for (Map.Entry<String, Long> entry : map.entrySet()) {
-                    tmp.append(entry.getKey()).append(": \t");
-                    double value = entry.getValue().doubleValue();
+                for (Directory dir : dirList) {
+                    tmp.append(dir.getName()).append(": \t");
+                    double value = dir.getSize().doubleValue();
                     String fileSize = value + " B";
                     if (value >= 1000) {
                         // Filesize > 1 KB
@@ -152,23 +153,33 @@ public class MainWindow {
      * Determines the size of each directory in the given path
      *
      * @param path Path to directory which should be analyzed
-     * @return Map of files and directories with corresponding size
+     * @return List of files and directories with corresponding size, ordered by size
      */
-    private static Map<String, Long> getDirectorySizes(String path) {
+    private static List<Directory> getDirectorySizes(String path) {
         File directory = new File(path);
-        Map<String, Long> fileList = new HashMap<>();
+        List<Directory> fList = new ArrayList<>();
 
         for (File file : Objects.requireNonNull(directory.listFiles())) {
             if (file.isFile()) {
-                fileList.put(file.getName(), file.length());
+                fList.add(new Directory(file.getName(), file.length()));
             } else if (file.isDirectory()) {
                 Long directorySize = getFolderSize(file);
-                fileList.put(file.getName(), directorySize);
+                fList.add(new Directory(file.getName(), directorySize));
             } else {
                 System.out.println(strings.containsKey("UnsupportedFileType") + ": " + file.getName());
             }
         }
-        return fileList;
+
+        class CustomComparator implements Comparator<Directory> {
+            @Override
+            public int compare(Directory o1, Directory o2) {
+                return o2.getSize().compareTo(o1.getSize());
+            }
+        }
+
+        Collections.sort(fList, new CustomComparator());
+
+        return fList;
     }
 
     /**
